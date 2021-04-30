@@ -27,7 +27,7 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => TogglRedmineCubit()
-            ..init(context)
+            ..initConfigs(context)
             ..loadTogglEntries(DateUtil.lastWeekRange()),
         ),
       ],

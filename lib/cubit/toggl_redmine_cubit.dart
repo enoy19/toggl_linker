@@ -2,57 +2,27 @@ import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meta/meta.dart';
-import 'package:toggl_linker/api/redmine.dart';
-import 'package:toggl_linker/api/toggl.dart';
-import 'package:toggl_linker/cubit/configs_cubit.dart';
-import 'package:toggl_linker/exception/configs_not_set_exception.dart';
-import 'package:toggl_linker/model/configs.dart';
+import 'package:toggl_linker/cubit/mixins/config_mixin.dart';
+import 'package:toggl_linker/cubit/mixins/redmine_api_mixin.dart';
 import 'package:toggl_linker/model/toggl/tg_detailed_report.dart';
 import 'package:toggl_linker/model/toggl/tg_time_entry.dart';
 
+import 'mixins/toggl_api_mixin.dart';
+
 part 'toggl_redmine_state.dart';
 
-class TogglRedmineCubit extends Cubit<TogglRedmineState> {
+class TogglRedmineCubit extends Cubit<TogglRedmineState> with TogglApiMixin, RedmineApiMixin, ConfigMixin {
   TogglRedmineCubit() : super(TogglRedmineInitial());
 
   DateTimeRange? _prevDateTimeRange;
-  late final ConfigsCubit _configsCubit;
-
-  void init(BuildContext context) {
-    _configsCubit = context.read<ConfigsCubit>();
-  }
 
   DateTimeRange? get range => _prevDateTimeRange;
-
-  Configs get _configs {
-    if (_configsCubit.state is ConfigsSet) {
-      return (_configsCubit.state as ConfigsSet).configs;
-    }
-
-    throw ConfigsNotSetException();
-  }
-
-  Toggl get _toggl {
-    return Toggl(
-      username: _configs.togglUsername,
-      apiToken: _configs.togglApiKey,
-      workspaceId: _configs.togglWorkspaceId,
-      clientIds: _configs.togglClientIds,
-    );
-  }
-
-  Redmine get _redmine {
-    return Redmine(
-      baseUrl: _configs.redmineBaseUrl,
-      apiToken: _configs.redmineApiKey,
-    );
-  }
 
   void loadTogglEntries(DateTimeRange range) async {
     _prevDateTimeRange = range;
     emit(TogglRedmineInitial());
     try {
-      final report = await _toggl.getReport(range);
+      final report = await toggl.getReport(range);
       emit(TogglReportLoaded(report));
     } on Exception catch (e) {
       emit(TogglRedmineFailed<Exception>(e));
@@ -68,10 +38,10 @@ class TogglRedmineCubit extends Cubit<TogglRedmineState> {
 
     try {
       for (final timeEntry in timeEntries) {
-        await _redmine.createTimeEntry(timeEntry);
+        await redmine.createTimeEntry(timeEntry);
       }
 
-      await _toggl.markAsBooked(timeEntries);
+      await toggl.markAsBooked(timeEntries);
     } on Exception catch (e) {
       emit(TogglRedmineFailed(e));
       return false;
