@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
+import 'package:toggl_linker/model/toggl/tg_client.dart';
 import 'package:toggl_linker/model/toggl/tg_detailed_report.dart';
 import 'package:toggl_linker/model/toggl/tg_time_entry.dart';
 import 'package:toggl_linker/model/toggl/tg_time_entry_bulk_update.dart';
@@ -74,6 +75,19 @@ class Toggl {
 
     return fromJsonArray(
         response.body, (json) => TogglWorkspace.fromJson(json));
+  }
+
+  Future<List<TogglClient>> getClients() async {
+    final response = await http.get(
+      Uri.parse('$_togglBaseUrl/clients'),
+      headers: _headers,
+    );
+
+    if (response.statusCode < 200 || response.statusCode > 299) {
+      throw Exception('getClients failed');
+    }
+
+    return fromJsonArray(response.body, (json) => TogglClient.fromJson(json));
   }
 
   Future<TogglDetailedReport> _getReportPage(

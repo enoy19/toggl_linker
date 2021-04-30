@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:multi_select_flutter/multi_select_flutter.dart';
 import 'package:toggl_linker/config_view.dart';
+import 'package:toggl_linker/cubit/clients_cubit.dart';
 import 'package:toggl_linker/cubit/configs_cubit.dart';
 import 'package:toggl_linker/cubit/toggl_cubit.dart';
 import 'package:toggl_linker/cubit/toggl_redmine_cubit.dart';
 import 'package:toggl_linker/exception/configs_not_set_exception.dart';
+import 'package:toggl_linker/model/toggl/tg_client.dart';
 import 'package:toggl_linker/model/toggl/tg_time_entry.dart';
 import 'package:toggl_linker/model/toggl/tg_workspace.dart';
 import 'package:toggl_linker/util/extension/hex_color.dart';
@@ -85,6 +88,7 @@ class Booking extends StatelessWidget {
             builder: (context, state) {
               if (state is TogglData) {
                 final workspaces = state.workspaces;
+
                 final currentWorkspaceId =
                     context.watch<CurrentWorkspaceCubit>().state;
 
@@ -94,13 +98,65 @@ class Booking extends StatelessWidget {
                           orElse: () => null,
                         );
 
-                return WorkspaceSelector(
-                  workspaces: workspaces,
-                  initialValue: initialWorkspace,
-                  onChanged: (value) {
-                    context.read<CurrentWorkspaceCubit>().emit(value?.id);
-                    context.read<TogglRedmineCubit>().reload();
-                  },
+                return Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    WorkspaceSelector(
+                      workspaces: workspaces,
+                      initialValue: initialWorkspace,
+                      onChanged: (value) {
+                        context.read<CurrentWorkspaceCubit>().emit(value?.id);
+                        context.read<ClientsCubit>().emit([]);
+                        context.read<TogglRedmineCubit>().reload();
+                      },
+                    ),
+                    BlocBuilder<CurrentWorkspaceCubit, int?>(
+                        builder: (context, currentWorkspaceId) {
+                      if (currentWorkspaceId != null) {
+                        final clientIds = context.watch<ClientsCubit>().state;
+
+                        final clients = state.clients
+                            .where(
+                                (element) => element.wid == currentWorkspaceId)
+                            .toList();
+
+                        if (clients.isEmpty) {
+                          return Container();
+                        }
+
+                        final initialClients = clientIds
+                            .map((e) => clients
+                                .firstWhere((element) => element.id == e))
+                            .toList();
+
+                        return Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: MultiSelectChipField<TogglClient?>(
+                            key: GlobalKey(),
+                            decoration: BoxDecoration(),
+                            showHeader: false,
+                            scroll: true,
+                            scrollBar: HorizontalScrollBar(),
+                            initialValue: initialClients,
+                            items: clients
+                                .map((e) => MultiSelectItem(e, e.name))
+                                .toList(),
+                            onTap: (values) {
+                              final clientIds = values
+                                  .where((element) => element != null)
+                                  .map((e) => e!)
+                                  .map((e) => e.id)
+                                  .toList();
+                              context.read<ClientsCubit>().emit(clientIds);
+                              context.read<TogglRedmineCubit>().reload();
+                            },
+                          ),
+                        );
+                      }
+
+                      return Container();
+                    }),
+                  ],
                 );
               }
 

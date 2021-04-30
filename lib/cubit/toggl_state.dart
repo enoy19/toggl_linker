@@ -11,6 +11,7 @@ class TogglDataLoadingFailed extends TogglState {}
 
 class TogglData extends TogglState {
   final List<TogglWorkspace> workspaces;
+  final List<TogglClient> clients;
 
-  TogglData(this.workspaces);
+  TogglData(this.workspaces, this.clients);
 }

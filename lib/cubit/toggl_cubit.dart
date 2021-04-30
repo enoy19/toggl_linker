@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:toggl_linker/cubit/mixins/config_mixin.dart';
 import 'package:toggl_linker/cubit/mixins/toggl_api_mixin.dart';
+import 'package:toggl_linker/model/toggl/tg_client.dart';
 import 'package:toggl_linker/model/toggl/tg_workspace.dart';
 
 import 'configs_cubit.dart';
@@ -37,7 +38,8 @@ class TogglCubit extends Cubit<TogglState> with TogglApiMixin, ConfigMixin {
     if (isConfigured) {
       emit(TogglDataLoading());
       final workspaces = await toggl.getWorkspaces();
-      emit(TogglData(workspaces));
+      final clients = await toggl.getClients();
+      emit(TogglData(workspaces, clients));
     } else {
       emit(TogglDataLoadingFailed());
     }
