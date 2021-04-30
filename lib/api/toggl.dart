@@ -7,6 +7,8 @@ import 'package:toggl_linker/model/toggl/tg_detailed_report.dart';
 import 'package:toggl_linker/model/toggl/tg_time_entry.dart';
 import 'package:toggl_linker/model/toggl/tg_time_entry_bulk_update.dart';
 import 'package:toggl_linker/model/toggl/tg_time_entry_bulk_update_wrapper.dart';
+import 'package:toggl_linker/model/toggl/tg_workspace.dart';
+import 'package:toggl_linker/util/json_array_util.dart';
 
 const bookedTag = '_BOOKED'; // TODO: create _BOOKED tag automatically in toggl
 const _reportsBaseUrl = 'https://api.track.toggl.com/reports/api/v2';
@@ -58,6 +60,19 @@ class Toggl {
     if (response.statusCode < 200 || response.statusCode > 299) {
       throw Exception('markAsBooked failed');
     }
+  }
+
+  Future<List<TogglWorkspace>> getWorkspaces() async {
+    final response = await http.get(
+      Uri.parse('$_togglBaseUrl/workspaces'),
+      headers: _headers,
+    );
+
+    if (response.statusCode < 200 || response.statusCode > 299) {
+      throw Exception('getWorkspaces failed');
+    }
+
+    return fromJsonArray(response.body, (json) => TogglWorkspace.fromJson(json));
   }
 
   Future<TogglDetailedReport> _getReportPage(
