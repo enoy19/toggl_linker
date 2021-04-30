@@ -5,7 +5,7 @@ import 'package:toggl_linker/config_view.dart';
 import 'package:toggl_linker/cubit/configs_cubit.dart';
 import 'package:toggl_linker/cubit/toggl_redmine_cubit.dart';
 import 'package:toggl_linker/exception/configs_not_set_exception.dart';
-import 'package:toggl_linker/model/tg_time_entry.dart';
+import 'package:toggl_linker/model/toggl/tg_time_entry.dart';
 import 'package:toggl_linker/util/extension/hex_color.dart';
 import 'package:url_launcher/url_launcher.dart';
 

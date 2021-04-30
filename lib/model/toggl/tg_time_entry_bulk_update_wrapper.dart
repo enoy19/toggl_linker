@@ -1,5 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:toggl_linker/model/tg_time_entry_bulk_update.dart';
+import 'package:toggl_linker/model/toggl/tg_time_entry_bulk_update.dart';
 
 part 'tg_time_entry_bulk_update_wrapper.g.dart';
 

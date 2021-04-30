@@ -3,7 +3,7 @@ import 'package:toggl_linker/api/toggl.dart';
 
 import 'tg_time_entry.dart';
 
-part 'detailed_report.g.dart';
+part 'tg_detailed_report.g.dart';
 
 @JsonSerializable()
 class DetailedReport {

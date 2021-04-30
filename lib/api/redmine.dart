@@ -6,7 +6,7 @@ import 'package:toggl_linker/exception/activity_not_found_exception.dart';
 import 'package:toggl_linker/model/redmine/rm_time_entry.dart';
 import 'package:toggl_linker/model/redmine/rm_time_entry_activities.dart';
 import 'package:toggl_linker/model/redmine/rm_time_entry_wrapper.dart';
-import 'package:toggl_linker/model/tg_time_entry.dart';
+import 'package:toggl_linker/model/toggl/tg_time_entry.dart';
 import 'package:toggl_linker/util/extension/duration_extension.dart';
 
 final _formatter = DateFormat('yyyy-MM-dd');

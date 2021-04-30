@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'detailed_report.dart';
+part of 'tg_detailed_report.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator

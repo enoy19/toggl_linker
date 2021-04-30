@@ -3,10 +3,10 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
-import 'package:toggl_linker/model/detailed_report.dart';
-import 'package:toggl_linker/model/tg_time_entry.dart';
-import 'package:toggl_linker/model/tg_time_entry_bulk_update.dart';
-import 'package:toggl_linker/model/tg_time_entry_bulk_update_wrapper.dart';
+import 'package:toggl_linker/model/toggl/tg_detailed_report.dart';
+import 'package:toggl_linker/model/toggl/tg_time_entry.dart';
+import 'package:toggl_linker/model/toggl/tg_time_entry_bulk_update.dart';
+import 'package:toggl_linker/model/toggl/tg_time_entry_bulk_update_wrapper.dart';
 
 const bookedTag = '_BOOKED'; // TODO: create _BOOKED tag automatically in toggl
 const _reportsBaseUrl = 'https://api.track.toggl.com/reports/api/v2';
@@ -18,7 +18,8 @@ class Toggl {
   final String username;
   final String workspaceId;
   final String clientIds;
-  final String userAgent = 'enoy19+toggl@gmail.com'; // app developer email address (https://github.com/toggl/toggl_api_docs/blob/master/reports.md#request-parameters)
+  final String userAgent =
+      'enoy19+toggl@gmail.com'; // app developer email address (https://github.com/toggl/toggl_api_docs/blob/master/reports.md#request-parameters)
 
   Toggl({
     required this.username,
@@ -48,10 +49,7 @@ class Toggl {
     final timeEntryIds = timeEntries.map((e) => e.id).join(',');
     final response = await http.put(
       Uri.parse('$_togglBaseUrl/time_entries/$timeEntryIds'),
-      headers: {
-        'Content-Type': 'application/json; charset=utf-8',
-        'Authorization': _auth,
-      },
+      headers: _headers,
       body: jsonEncode(
         ToggleTimeEntryBulkUpdateWrapper(bulkUpdate).toJson(),
       ),
@@ -67,15 +65,13 @@ class Toggl {
     int page = 1,
   }) async {
     final response = await http.get(
-        _path('/details', queryParams: {
-          'since': _formatter.format(range.start),
-          'until': _formatter.format(range.end),
-          'page': '$page'
-        }),
-        headers: {
-          'Content-Type': 'application/json; charset=utf-8',
-          'Authorization': _auth,
-        });
+      _pathReport('/details', queryParams: {
+        'since': _formatter.format(range.start),
+        'until': _formatter.format(range.end),
+        'page': '$page'
+      }),
+      headers: _headers,
+    );
 
     if (response.statusCode < 200 || response.statusCode > 299) {
       throw Exception('get reports failed');
@@ -84,7 +80,8 @@ class Toggl {
     return DetailedReport.fromJson(jsonDecode(response.body));
   }
 
-  Uri _path(String path, {Map<String, String>? queryParams}) {
+  /// convenience method to create reports API Url
+  Uri _pathReport(String path, {Map<String, String>? queryParams}) {
     List<String> queryItems = [];
     if (queryParams != null) {
       queryParams.forEach((key, value) => queryItems
@@ -100,4 +97,9 @@ class Toggl {
 
   String get _auth =>
       "Basic ${base64Encode(utf8.encode("$apiToken:api_token"))}";
+
+  Map<String, String> get _headers => {
+        'Content-Type': 'application/json; charset=utf-8',
+        'Authorization': _auth,
+      };
 }

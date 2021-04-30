@@ -7,8 +7,8 @@ import 'package:toggl_linker/api/toggl.dart';
 import 'package:toggl_linker/cubit/configs_cubit.dart';
 import 'package:toggl_linker/exception/configs_not_set_exception.dart';
 import 'package:toggl_linker/model/configs.dart';
-import 'package:toggl_linker/model/detailed_report.dart';
-import 'package:toggl_linker/model/tg_time_entry.dart';
+import 'package:toggl_linker/model/toggl/tg_detailed_report.dart';
+import 'package:toggl_linker/model/toggl/tg_time_entry.dart';
 
 part 'toggl_redmine_state.dart';
 
