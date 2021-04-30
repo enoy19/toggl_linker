@@ -6,8 +6,8 @@ part of 'tg_detailed_report.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-DetailedReport _$DetailedReportFromJson(Map<String, dynamic> json) {
-  return DetailedReport(
+TogglDetailedReport _$TogglDetailedReportFromJson(Map<String, dynamic> json) {
+  return TogglDetailedReport(
     json['total_count'] as int,
     json['per_page'] as int,
     json['total_grand'] as int?,
@@ -17,7 +17,8 @@ DetailedReport _$DetailedReportFromJson(Map<String, dynamic> json) {
   );
 }
 
-Map<String, dynamic> _$DetailedReportToJson(DetailedReport instance) =>
+Map<String, dynamic> _$TogglDetailedReportToJson(
+        TogglDetailedReport instance) =>
     <String, dynamic>{
       'total_count': instance.total_count,
       'per_page': instance.per_page,

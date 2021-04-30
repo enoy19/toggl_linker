@@ -6,7 +6,7 @@ abstract class TogglRedmineState {}
 class TogglRedmineInitial extends TogglRedmineState {}
 
 class TogglReportLoaded extends TogglRedmineState {
-  final DetailedReport detailedReport;
+  final TogglDetailedReport detailedReport;
 
   TogglReportLoaded(this.detailedReport);
 }

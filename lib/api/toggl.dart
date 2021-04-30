@@ -28,7 +28,7 @@ class Toggl {
     required this.clientIds,
   });
 
-  Future<DetailedReport> getReport(DateTimeRange range) async {
+  Future<TogglDetailedReport> getReport(DateTimeRange range) async {
     final initialReport = await _getReportPage(range);
 
     int currentPage = 1;
@@ -60,7 +60,7 @@ class Toggl {
     }
   }
 
-  Future<DetailedReport> _getReportPage(
+  Future<TogglDetailedReport> _getReportPage(
     DateTimeRange range, {
     int page = 1,
   }) async {
@@ -77,7 +77,7 @@ class Toggl {
       throw Exception('get reports failed');
     }
 
-    return DetailedReport.fromJson(jsonDecode(response.body));
+    return TogglDetailedReport.fromJson(jsonDecode(response.body));
   }
 
   /// convenience method to create reports API Url
