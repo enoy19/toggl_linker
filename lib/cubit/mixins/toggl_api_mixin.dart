@@ -3,13 +3,15 @@ import 'package:toggl_linker/model/configs.dart';
 
 mixin TogglApiMixin {
   Configs get configs;
+  int? get currentWorkspace;
+  List<int> get clientIds;
 
   Toggl get toggl {
     return Toggl(
       username: configs.togglUsername,
       apiToken: configs.togglApiKey,
-      workspaceId: configs.togglWorkspaceId,
-      clientIds: configs.togglClientIds,
+      workspaceId: currentWorkspace,
+      clientIds: clientIds,
     );
   }
 }

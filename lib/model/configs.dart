@@ -8,16 +8,12 @@ class Configs {
   String redmineBaseUrl;
   String togglUsername;
   String togglApiKey;
-  String togglWorkspaceId;
-  String togglClientIds;
 
   Configs({
     required this.redmineApiKey,
     required this.redmineBaseUrl,
     required this.togglUsername,
-    required this.togglApiKey,
-    required this.togglWorkspaceId,
-    required this.togglClientIds,
+    required this.togglApiKey
   });
 
   factory Configs.empty() => Configs(
@@ -25,8 +21,6 @@ class Configs {
         redmineBaseUrl: '',
         togglUsername: '',
         togglApiKey: '',
-        togglWorkspaceId: '',
-        togglClientIds: '',
       );
 
   factory Configs.fromJson(Map<String, dynamic> json) =>

@@ -18,8 +18,8 @@ final _formatter = DateFormat('yyyy-MM-dd');
 class Toggl {
   final String apiToken;
   final String username;
-  final String workspaceId;
-  final String clientIds;
+  final int? workspaceId;
+  final List<int> clientIds;
   final String userAgent =
       'enoy19+toggl@gmail.com'; // app developer email address (https://github.com/toggl/toggl_api_docs/blob/master/reports.md#request-parameters)
 
@@ -72,7 +72,8 @@ class Toggl {
       throw Exception('getWorkspaces failed');
     }
 
-    return fromJsonArray(response.body, (json) => TogglWorkspace.fromJson(json));
+    return fromJsonArray(
+        response.body, (json) => TogglWorkspace.fromJson(json));
   }
 
   Future<TogglDetailedReport> _getReportPage(
@@ -105,7 +106,7 @@ class Toggl {
 
     String query = queryItems.isEmpty ? '' : '&${queryItems.join('&')}';
     return Uri.parse(
-      '$_reportsBaseUrl/$path?user_agent=$userAgent&workspace_id=$workspaceId&client_ids=$clientIds' +
+      '$_reportsBaseUrl/$path?user_agent=$userAgent&workspace_id=$workspaceId&client_ids=${clientIds.join(',')}' +
           query,
     );
   }

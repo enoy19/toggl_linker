@@ -12,8 +12,6 @@ Configs _$ConfigsFromJson(Map<String, dynamic> json) {
     redmineBaseUrl: json['redmineBaseUrl'] as String,
     togglUsername: json['togglUsername'] as String,
     togglApiKey: json['togglApiKey'] as String,
-    togglWorkspaceId: json['togglWorkspaceId'] as String,
-    togglClientIds: json['togglClientIds'] as String,
   );
 }
 
@@ -22,6 +20,4 @@ Map<String, dynamic> _$ConfigsToJson(Configs instance) => <String, dynamic>{
       'redmineBaseUrl': instance.redmineBaseUrl,
       'togglUsername': instance.togglUsername,
       'togglApiKey': instance.togglApiKey,
-      'togglWorkspaceId': instance.togglWorkspaceId,
-      'togglClientIds': instance.togglClientIds,
     };

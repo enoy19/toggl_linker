@@ -74,22 +74,6 @@ class _ConfigViewState extends State<ConfigView> {
                       validator: _notEmpty,
                       onSaved: (value) => _configs.togglApiKey = value!,
                     ),
-                    TextFormField(
-                      initialValue: _configs.togglWorkspaceId,
-                      decoration: InputDecoration(
-                        labelText: 'Toggl Workspace ID',
-                      ),
-                      validator: _notEmpty,
-                      onSaved: (value) => _configs.togglWorkspaceId = value!,
-                    ),
-                    TextFormField(
-                      initialValue: _configs.togglClientIds,
-                      decoration: InputDecoration(
-                        labelText: 'Toggl Client IDs (comma separated)',
-                      ),
-                      validator: _notEmpty,
-                      onSaved: (value) => _configs.togglClientIds = value!,
-                    ),
                   ],
                 ),
               ),

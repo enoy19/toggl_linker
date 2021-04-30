@@ -3,11 +3,16 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:toggl_linker/config_view.dart';
 import 'package:toggl_linker/cubit/configs_cubit.dart';
+import 'package:toggl_linker/cubit/toggl_cubit.dart';
 import 'package:toggl_linker/cubit/toggl_redmine_cubit.dart';
 import 'package:toggl_linker/exception/configs_not_set_exception.dart';
 import 'package:toggl_linker/model/toggl/tg_time_entry.dart';
+import 'package:toggl_linker/model/toggl/tg_workspace.dart';
 import 'package:toggl_linker/util/extension/hex_color.dart';
+import 'package:toggl_linker/widget/workspace_selector.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+import 'cubit/workspace_cubit.dart';
 
 final _formatter = DateFormat('dd-MM-yyyy');
 
@@ -75,6 +80,32 @@ class Booking extends StatelessWidget {
                 },
               ),
             ),
+          ),
+          BlocBuilder<TogglCubit, TogglState>(
+            builder: (context, state) {
+              if (state is TogglData) {
+                final workspaces = state.workspaces;
+                final currentWorkspaceId =
+                    context.watch<CurrentWorkspaceCubit>().state;
+
+                final initialWorkspace =
+                    workspaces.map((e) => e as TogglWorkspace?).firstWhere(
+                          (element) => element?.id == currentWorkspaceId,
+                          orElse: () => null,
+                        );
+
+                return WorkspaceSelector(
+                  workspaces: workspaces,
+                  initialValue: initialWorkspace,
+                  onChanged: (value) {
+                    context.read<CurrentWorkspaceCubit>().emit(value?.id);
+                    context.read<TogglRedmineCubit>().reload();
+                  },
+                );
+              }
+
+              return Center(child: CircularProgressIndicator());
+            },
           ),
           Expanded(
             child: BlocBuilder<TogglRedmineCubit, TogglRedmineState>(
